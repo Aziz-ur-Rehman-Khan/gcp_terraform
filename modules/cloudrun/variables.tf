@@ -1,39 +1,33 @@
-variable "name" {
-  description = "The name of the Cloud Run service."
+variable "project" {
+  description = "The GCP project ID where resources will be created."
   type        = string
 }
 
-variable "location" {
-  description = "The location where the Cloud Run service will be deployed."
+variable "region" {
+  description = "The GCP region where resources will be created. Default is 'me-central2'."
+  type        = string
+  default     = "me-central2"
+}
+
+variable "prefix" {
+  description = "A prefix to be used for naming resources. This helps in identifying resources belonging to the same project or environment."
   type        = string
 }
 
 variable "container_image" {
-  description = "The Docker image to deploy on Cloud Run."
+  description = "The container image to deploy in Cloud Run. This should be a fully qualified image URL, such as 'gcr.io/my-project/my-image:tag'."
+  type        = string
+}
+variable "env_files" {
+  description = "Map of environment file paths for different environments"
+  type        = string
+}
+variable "cloudsql_connection_name" {
+  description = "Connection String for CloudSQL"
   type        = string
 }
 
-variable "max_scale" {
-  description = "Maximum number of instances for autoscaling."
-  type        = string
-}
-
-variable "cloudsql_instance_connection_name" {
-  description = "The connection name of the Cloud SQL instance."
-  type        = string
-}
-
-variable "redis_host" {
-  description = "The hostname of the Redis instance."
-  type        = string
-}
-
-variable "redis_port" {
-  description = "The port of the Redis instance."
-  type        = number
-}
-
-variable "project_id" {
-  description = "The GCP project ID."
+variable "redis_uri" {
+  description = "The Redis URI"
   type        = string
 }

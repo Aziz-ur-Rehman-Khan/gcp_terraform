@@ -1,14 +1,11 @@
-variable "name" {
-  description = "The name of the Artifact Registry repository."
-  type        = string
-}
-
-variable "location" {
-  description = "The location where the Artifact Registry repository will be created."
-  type        = string
-}
-
-variable "project_id" {
+variable "project" {
   description = "The GCP project ID."
-  type        = string
+}
+
+variable "region" {
+  description = "The region where the repository will be located."
+}
+
+variable "prefix" {
+  description = "A prefix used for naming the repository to ensure uniqueness."
 }

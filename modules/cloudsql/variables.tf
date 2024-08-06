@@ -1,24 +1,26 @@
-variable "name" {
-  description = "The name of the Cloud SQL instance."
+variable "project" {
+  description = "The GCP project ID where resources will be created."
   type        = string
 }
 
 variable "region" {
-  description = "The region where the Cloud SQL instance will be created."
+  description = "The GCP region where resources will be created. Default is 'me-central2'."
   type        = string
+  default     = "me-central2"
 }
 
+variable "prefix" {
+  description = "A prefix to be used for naming resources. This helps in identifying resources belonging to the same project or environment."
+  type        = string
+}
 variable "database_version" {
   description = "The database version to use."
   type        = string
+  default     = "POSTGRES_15"
 }
 
 variable "tier" {
   description = "The machine type for the Cloud SQL instance."
   type        = string
-}
-
-variable "db_user" {
-  description = "The database user name."
-  type        = string
+  default     = "db-f1-micro"
 }

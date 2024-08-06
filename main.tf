@@ -1,36 +1,57 @@
-module "redis" {
-  source        = "./modules/redis"
-
-  name          = local.redis_instance_name
-  region         = "us-central1"
-  tier           = "STANDARD_HA"
-  memory_size_gb = 2
-  redis_version  = "REDIS_6_X"
+module "serverless_vpc_connector" {
+  source  = "./modules/vpc_connector"
+  project = var.project_id
+  region  = var.region
+  prefix  = local.project_prefix
+  network = "default"
 }
 
-module "cloudsql" {
-  source         = "./modules/cloudsql"
-  name           = local.database_instance_name
-  region         = "us-central1"
-  database_version = "POSTGRES_13"
-  tier           = "db-f1-micro"
-  db_user =       "postgres"
+module "cloud_sql" {
+  source  = "./modules/cloudsql"
+  project = var.project_id
+  region  = var.region
+  prefix  = local.project_prefix
+
 }
 
-module "cloudrun" {
-  source    = "./modules/cloudrun"
-  name                         = "cloudrun-srv"
-  location                     = "us-central1"
-  container_image              = "us-docker.pkg.dev/cloudrun/container/hello"
-  max_scale                    = "1000"
-  cloudsql_instance_connection_name = module.cloudsql.instance_connection_name
-  redis_host                   = module.redis.redis_host
-  redis_port                   = module.redis.redis_port
-  project_id                   = "voodoo-409609"
+module "memcached_redis" {
+  source  = "./modules/redis"
+  project = var.project_id
+  region  = var.region
+  prefix  = local.project_prefix
 }
 
-# module "artifact_registry" {
-#   source   = "./modules/artifact_registry"
-#   name     = "my-artifact-registry"
-#   location = "us-central1"
-# }
+module "load_balancer" {
+  source                 = "./modules/loadbalancer"
+  project                = var.project_id
+  region                 = var.region
+  prefix                 = local.project_prefix
+  cloud_run_service_name = module.cloud_run.service_name
+}
+
+module "cloud_run" {
+  source                   = "./modules/cloudrun"
+  project                  = var.project_id
+  region                   = var.region
+  prefix                   = local.project_prefix
+  container_image          = module.artifact_registry.repository_url
+  redis_uri                = "${module.memcached_redis.redis_host}:${module.memcached_redis.redis_port}"
+  cloudsql_connection_name = module.cloud_sql.sql_instance_connection_name
+  env_files                = "./.env"
+
+}
+
+module "cloud_nat" {
+  source  = "./modules/cloudnat"
+  project = var.project_id
+  region  = var.region
+  prefix  = local.project_prefix
+  network = "default"
+}
+
+module "artifact_registry" {
+  source  = "./modules/artifact_registry"
+  project = var.project_id
+  region  = var.region
+  prefix  = local.project_prefix
+}

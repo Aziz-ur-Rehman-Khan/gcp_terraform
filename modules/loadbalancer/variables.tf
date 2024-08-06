@@ -13,3 +13,7 @@ variable "prefix" {
   description = "A prefix to be used for naming resources. This helps in identifying resources belonging to the same project or environment."
   type        = string
 }
+variable "cloud_run_service_name" {
+  description = "The Cloud Run Service name that reqires Loadbalancer"
+  type        = string
+}

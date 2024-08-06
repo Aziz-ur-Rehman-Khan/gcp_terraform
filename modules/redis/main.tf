@@ -1,8 +1,7 @@
-resource "google_redis_instance" "redis" {
-  name           = var.name
+resource "google_redis_instance" "memcached" {
+  name           = "${var.prefix}-memcached"
+  project        = var.project
   region         = var.region
-  tier           = var.tier
-  memory_size_gb = var.memory_size_gb
-  redis_version  = var.redis_version
-  
+  tier           = "STANDARD_HA"
+  memory_size_gb = 1
 }

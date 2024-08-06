@@ -13,3 +13,9 @@ variable "prefix" {
   description = "A prefix to be used for naming resources. This helps in identifying resources belonging to the same project or environment."
   type        = string
 }
+
+variable "network" {
+  description = "The name of the VPC network to use. Default is 'default'."
+  type        = string
+  default     = "default"
+}
