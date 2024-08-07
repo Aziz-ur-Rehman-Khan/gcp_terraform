@@ -31,3 +31,6 @@ variable "redis_uri" {
   description = "The Redis URI"
   type        = string
 }
+variable "vpc_connector_id" {
+
+}

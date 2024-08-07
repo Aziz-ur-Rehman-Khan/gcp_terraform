@@ -19,3 +19,9 @@ variable "network" {
   type        = string
   default     = "default"
 }
+
+variable "subnet_id" {
+  description = "The name of the VPC subnet id to use. Default is 'default'."
+  type        = string
+  default     = "default"
+}

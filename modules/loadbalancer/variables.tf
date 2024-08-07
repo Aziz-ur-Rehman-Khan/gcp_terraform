@@ -17,3 +17,7 @@ variable "cloud_run_service_name" {
   description = "The Cloud Run Service name that reqires Loadbalancer"
   type        = string
 }
+variable "cloud_run_service_id" {
+  description = "The Cloud Run Service id that reqires Loadbalancer"
+  type        = string
+}

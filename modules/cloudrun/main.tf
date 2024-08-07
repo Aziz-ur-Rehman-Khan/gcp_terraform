@@ -21,42 +21,52 @@ locals {
     }
   )
 }
+resource "google_cloud_run_service_iam_binding" "default" {
+  location = google_cloud_run_v2_service.default.location
+  service  = google_cloud_run_v2_service.default.name
+  role     = "roles/run.invoker"
+  members = [
+    "allUsers"
+  ]
+}
 
-
-resource "google_cloud_run_service" "default" {
+# Cloud Run service
+resource "google_cloud_run_v2_service" "default" {
   name     = "${var.prefix}-cloud-run-service"
+  provider = google-beta
   location = var.region
-  project  = var.project
 
   template {
-    spec {
-      containers {
-        image = var.container_image
-        ports {
-          container_port = 8080
+    containers {
+      image = var.container_image
+      ports {
+        container_port = 8080
+      }
+      resources {
+        limits = {
+          cpu    = "1000m"
+          memory = "512Mi"
         }
+      }
 
-        dynamic "env" {
-          for_each = local.environment_variables
-          content {
-            name  = env.key
-            value = env.value
-          }
+      dynamic "env" {
+        for_each = local.environment_variables
+        content {
+          name  = env.key
+          value = env.value
         }
       }
     }
+
+    scaling {
+      max_instance_count = 5
+    }
+
+    vpc_access {
+      connector = var.vpc_connector_id
+      egress    = "ALL_TRAFFIC"
+    }
   }
 
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
-}
-
-
-resource "google_cloud_run_service_iam_member" "invoker" {
-  service  = google_cloud_run_service.default.name
-  location = google_cloud_run_service.default.location
-  role     = "roles/run.invoker"
-  member   = "allUsers"
+  depends_on = [var.vpc_connector_id]
 }

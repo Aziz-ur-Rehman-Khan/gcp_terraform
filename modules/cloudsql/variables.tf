@@ -16,11 +16,11 @@ variable "prefix" {
 variable "database_version" {
   description = "The database version to use."
   type        = string
-  default     = "POSTGRES_15"
+  default     = "POSTGRES_16"
 }
 
 variable "tier" {
   description = "The machine type for the Cloud SQL instance."
   type        = string
-  default     = "db-f1-micro"
+  default     = "db-g1-small"
 }
