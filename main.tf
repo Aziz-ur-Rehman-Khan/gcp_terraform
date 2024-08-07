@@ -43,21 +43,29 @@ module "vpc" {
 }
 
 
-module "serverless_connector" {
-  source  = "terraform-google-modules/network/google//modules/vpc-serverless-connector-beta"
-  version = "~> 9.0"
+# module "serverless_connector" {
+#   source  = "terraform-google-modules/network/google//modules/vpc-serverless-connector-beta"
+#   version = "~> 9.0"
 
-  project_id = var.project_id
-  vpc_connectors = [{
-    name            = "central-serverless"
-    region          = var.region
-    subnet_name     = module.vpc.subnets["${var.region}/${local.project_prefix}-subnet"]["name"]
-    host_project_id = var.project_id
-    machine_type    = "e2-micro"
-    min_instances   = 2
-    max_instances   = 3
-  
-  }]
+#   project_id = var.project_id
+#   vpc_connectors = [{
+#     name            = "central-serverless"
+#     region          = var.region
+#     ip_cidr_range = "10.58.167.0/28"
+#     subnet_name     = module.vpc.subnets["${var.region}/${local.project_prefix}-subnet"]["name"]
+#     host_project_id = var.project_id
+#     machine_type    = "e2-micro"
+#     min_instances   = 2
+#     max_instances   = 3
+
+
+#   }]
+# }
+
+resource "google_vpc_access_connector" "connector" {
+  name          = "vpc-access-connector"
+  ip_cidr_range = "10.58.167.0/28"
+  network       = module.vpc.network_name
 }
 module "cloud_run" {
   source  = "GoogleCloudPlatform/cloud-run/google"
@@ -66,18 +74,21 @@ module "cloud_run" {
   service_name          = "${local.project_prefix}-cloudrun-service"
   project_id            = var.project_id
   location              = var.region
-  image                 = "us-docker.pkg.dev/cloudrun/container/hello"
+  image                 = "gcr.io/kilow-431017/kilow-staging@sha256:d6ca8f7a58b693f91f6cde7bf45573f1e2e6a9a6d1d0fef7d2126cf296e9a8f4"
   service_account_email = "github-workflow@kilow-431017.iam.gserviceaccount.com"
-  env_vars = local.environment_variables
-  ports = 3000
-  
+  env_vars              = local.environment_variables
+  ports = {
+    port = 3000
+    name = "http1"
+  }
+
   template_annotations = {
     "autoscaling.knative.dev/maxScale"        = 4
     "autoscaling.knative.dev/minScale"        = 2
-    "run.googleapis.com/vpc-access-connector" = element(tolist(module.serverless_connector.connector_ids), 1)
+    "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.id
     "run.googleapis.com/vpc-access-egress"    = "all-traffic"
   }
-  
+
 }
 resource "google_cloud_run_service_iam_binding" "default" {
   location = module.cloud_run.location

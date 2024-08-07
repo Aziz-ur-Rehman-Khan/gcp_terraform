@@ -18,8 +18,7 @@ locals {
   environment_variables_map = merge(
     local.static_environment_variables,
     {
-      "HOST"      = "GHJKL:fcgvhbjn"
-      "REDIS_URI" = "FFGGHHH"
+      "REDIS" = "FFGGHHH"
       # Add other static variables as needed
     }
   )
