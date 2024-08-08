@@ -54,7 +54,7 @@ module "cloud_run" {
   service_name          = "${local.project_prefix}-cloudrun-service"
   project_id            = var.project_id
   location              = var.region
-  image                 = "us-docker.pkg.dev/cloudrun/container/hello"
+  image                 = "gcr.io/kilow-431017/kilow-staging@sha256:d6ca8f7a58b693f91f6cde7bf45573f1e2e6a9a6d1d0fef7d2126cf296e9a8f4"
   service_account_email = "github-workflow@kilow-431017.iam.gserviceaccount.com"
   env_vars              = local.environment_variables
   ports = {
