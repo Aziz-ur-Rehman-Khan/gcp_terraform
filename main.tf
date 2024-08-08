@@ -11,8 +11,9 @@ module "memcached_redis" {
   project = var.project_id
   region  = var.region
   prefix  = local.project_prefix
+  network_id   = module.vpc.network_id
+  network = module.vpc.network_name
 }
-
 module "load_balancer" {
   source                 = "./modules/loadbalancer"
   project                = var.project_id

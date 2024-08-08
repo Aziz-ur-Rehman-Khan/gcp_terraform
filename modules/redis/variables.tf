@@ -13,3 +13,13 @@ variable "prefix" {
   description = "A prefix to be used for naming resources. This helps in identifying resources belonging to the same project or environment."
   type        = string
 }
+
+variable "network_id" {
+  description = "Network ID"
+  type        = string
+}
+
+variable "network" {
+  description = "Network Name"
+  type        = string
+}
