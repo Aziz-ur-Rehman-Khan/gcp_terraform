@@ -13,14 +13,14 @@ module "memcached_redis" {
   prefix  = local.project_prefix
 }
 
-# module "load_balancer" {
-#   source                 = "./modules/loadbalancer"
-#   project                = var.project_id
-#   region                 = var.region
-#   prefix                 = local.project_prefix
-#   cloud_run_service_name = module.cloud_run.service_name
-#   cloud_run_service_id   = module.cloud_run.service_id
-# }
+module "load_balancer" {
+  source                 = "./modules/loadbalancer"
+  project                = var.project_id
+  region                 = var.region
+  prefix                 = local.project_prefix
+  cloud_run_service_name = module.cloud_run.service_name
+  cloud_run_service_id   = module.cloud_run.service_id
+}
 
 module "vpc" {
   source  = "terraform-google-modules/network/google"
@@ -42,26 +42,6 @@ module "vpc" {
   ]
 }
 
-
-# module "serverless_connector" {
-#   source  = "terraform-google-modules/network/google//modules/vpc-serverless-connector-beta"
-#   version = "~> 9.0"
-
-#   project_id = var.project_id
-#   vpc_connectors = [{
-#     name            = "central-serverless"
-#     region          = var.region
-#     ip_cidr_range = "10.58.167.0/28"
-#     subnet_name     = module.vpc.subnets["${var.region}/${local.project_prefix}-subnet"]["name"]
-#     host_project_id = var.project_id
-#     machine_type    = "e2-micro"
-#     min_instances   = 2
-#     max_instances   = 3
-
-
-#   }]
-# }
-
 resource "google_vpc_access_connector" "connector" {
   name          = "vpc-access-connector"
   ip_cidr_range = "10.58.167.0/28"
@@ -74,7 +54,7 @@ module "cloud_run" {
   service_name          = "${local.project_prefix}-cloudrun-service"
   project_id            = var.project_id
   location              = var.region
-  image                 = "gcr.io/kilow-431017/kilow-staging@sha256:d6ca8f7a58b693f91f6cde7bf45573f1e2e6a9a6d1d0fef7d2126cf296e9a8f4"
+  image                 = "us-docker.pkg.dev/cloudrun/container/hello"
   service_account_email = "github-workflow@kilow-431017.iam.gserviceaccount.com"
   env_vars              = local.environment_variables
   ports = {

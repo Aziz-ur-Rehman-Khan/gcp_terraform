@@ -31,12 +31,6 @@
 #____________________
 
 
-
-
-
-
-
-
 # Create a static IP address
 resource "google_compute_address" "static_ip" {
   name         = "${var.prefix}-lb-ip"
