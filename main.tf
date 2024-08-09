@@ -1,4 +1,3 @@
-
 module "storage" {
   source  = "./modules/storage"
   project = var.project_id
@@ -30,6 +29,8 @@ module "load_balancer" {
   prefix                 = local.project_prefix
   cloud_run_service_name = module.cloud_run.service_name
   cloud_run_service_id   = module.cloud_run.service_id
+  domain_name = var.domain_name
+
 }
 
 module "vpc" {

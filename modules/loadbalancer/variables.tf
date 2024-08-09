@@ -21,3 +21,8 @@ variable "cloud_run_service_id" {
   description = "The Cloud Run Service id that reqires Loadbalancer"
   type        = string
 }
+variable "domain_name" {
+  description = "The domain name for the DNS zone"
+  type        = string
+}
+
