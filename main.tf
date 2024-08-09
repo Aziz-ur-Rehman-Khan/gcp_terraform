@@ -1,18 +1,27 @@
-module "cloud_sql" {
-  source  = "./modules/cloudsql"
+
+module "storage" {
+  source  = "./modules/storage"
   project = var.project_id
   region  = var.region
   prefix  = local.project_prefix
+}
+module "cloud_sql" {
+  source     = "./modules/cloudsql"
+  project    = var.project_id
+  region     = var.region
+  prefix     = local.project_prefix
+  network    = module.vpc.network_self_link
+  network_id = module.vpc.network_id
 
 }
 
 module "memcached_redis" {
-  source  = "./modules/redis"
-  project = var.project_id
-  region  = var.region
-  prefix  = local.project_prefix
-  network_id   = module.vpc.network_id
-  network = module.vpc.network_name
+  source     = "./modules/redis"
+  project    = var.project_id
+  region     = var.region
+  prefix     = local.project_prefix
+  network_id = module.vpc.network_id
+  network    = module.vpc.network_name
 }
 module "load_balancer" {
   source                 = "./modules/loadbalancer"
@@ -55,9 +64,10 @@ module "cloud_run" {
   service_name          = "${local.project_prefix}-cloudrun-service"
   project_id            = var.project_id
   location              = var.region
-  image                 = "gcr.io/kilow-431017/kilow-staging@sha256:d6ca8f7a58b693f91f6cde7bf45573f1e2e6a9a6d1d0fef7d2126cf296e9a8f4"
+  image                 = "gcr.io/kilow-431017/kilow-staging@sha256:06af6b5b33fe52cfc4c1252adef38de0a6f16f489ee079f30bad62aad570a518"
   service_account_email = "github-workflow@kilow-431017.iam.gserviceaccount.com"
   env_vars              = local.environment_variables
+
   ports = {
     port = 3000
     name = "http1"
@@ -65,9 +75,12 @@ module "cloud_run" {
 
   template_annotations = {
     "autoscaling.knative.dev/maxScale"        = 4
-    "autoscaling.knative.dev/minScale"        = 2
+    "autoscaling.knative.dev/minScale"        = 1
     "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.id
     "run.googleapis.com/vpc-access-egress"    = "all-traffic"
+    "run.googleapis.com/cloudsql-instances"   = module.cloud_sql.sql_instance_connection_name
+    "run.googleapis.com/cpu-throttling"       = "false"
+    "run.googleapis.com/startup-cpu-boost"    = "true"
   }
 
 }
@@ -84,7 +97,7 @@ module "cloud_nat" {
   project   = var.project_id
   region    = var.region
   prefix    = local.project_prefix
-  network   = module.vpc.network_name
+  network   = module.vpc.network_id
   subnet_id = tostring(module.vpc.subnets_ids[0])
 }
 module "artifact_registry" {

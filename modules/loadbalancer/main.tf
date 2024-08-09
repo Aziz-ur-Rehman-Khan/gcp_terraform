@@ -17,9 +17,9 @@ resource "google_compute_region_network_endpoint_group" "cloud_run_neg" {
 
 # Create a backend service for Cloud Run
 resource "google_compute_backend_service" "cloud_run_backend" {
-  name     = "${var.prefix}-cloud-run-backend"
-  protocol = "HTTP"
-  port_name = "http"
+  name                  = "${var.prefix}-cloud-run-backend"
+  protocol              = "HTTP"
+  port_name             = "http"
   load_balancing_scheme = "EXTERNAL"
 
   backend {

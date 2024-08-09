@@ -24,3 +24,14 @@ variable "tier" {
   type        = string
   default     = "db-g1-small"
 }
+
+variable "network" {
+  description = "The name of the VPC network to use. Default is 'default'."
+  type        = string
+  default     = "default"
+}
+variable "network_id" {
+  description = "The name of the VPC network Id to use. Default is 'default'."
+  type        = string
+  default     = "default"
+}
