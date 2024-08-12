@@ -33,3 +33,26 @@ variable "cname_target" {
   type        = string
   default     = ""
 }
+
+variable "db_user_name" {
+  description = "The username for the database instance."
+  type        = string
+  default     = "postgres"
+}
+
+variable "db_password" {
+  description = "The password for the database user."
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "The name of the database to be created within the database instance."
+  type        = string
+}
+
+variable "db_port" {
+  description = "The port number on which the database instance will listen for connections."
+  type        = string
+  default     = "5432"
+}

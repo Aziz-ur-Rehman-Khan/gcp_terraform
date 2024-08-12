@@ -11,7 +11,10 @@ module "cloud_sql" {
   prefix     = local.project_prefix
   network    = module.vpc.network_self_link
   network_id = module.vpc.network_id
-
+  db_name = var.db_name
+  db_password = var.db_password
+  db_port = var.db_port
+  db_user_name = var.db_user_name
 }
 
 module "memcached_redis" {
@@ -29,7 +32,7 @@ module "load_balancer" {
   prefix                 = local.project_prefix
   cloud_run_service_name = module.cloud_run.service_name
   cloud_run_service_id   = module.cloud_run.service_id
-  domain_name = var.domain_name
+  domain_name            = var.domain_name
 
 }
 

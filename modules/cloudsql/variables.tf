@@ -35,3 +35,23 @@ variable "network_id" {
   type        = string
   default     = "default"
 }
+
+variable "db_user_name" {
+  description = "The username for the database instance."
+  type        = string
+}
+
+variable "db_password" {
+  description = "The password for the database user."
+  type        = string
+  sensitive   = true
+}
+variable "db_port" {
+  description = "The port number on which the database instance is listening."
+  type        = string
+}
+
+variable "db_name" {
+  description = "The name of the database."
+  type        = string
+}
