@@ -44,7 +44,6 @@ variable "db_user_name" {
 variable "db_password" {
   description = "The password for the database user."
   type        = string
-  sensitive   = true
 }
 variable "db_port" {
   description = "The port number on which the database instance is listening."

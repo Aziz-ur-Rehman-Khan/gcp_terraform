@@ -5,15 +5,15 @@ module "storage" {
   prefix  = local.project_prefix
 }
 module "cloud_sql" {
-  source     = "./modules/cloudsql"
-  project    = var.project_id
-  region     = var.region
-  prefix     = local.project_prefix
-  network    = module.vpc.network_self_link
-  network_id = module.vpc.network_id
-  db_name = var.db_name
-  db_password = var.db_password
-  db_port = var.db_port
+  source       = "./modules/cloudsql"
+  project      = var.project_id
+  region       = var.region
+  prefix       = local.project_prefix
+  network      = module.vpc.network_self_link
+  network_id   = module.vpc.network_id
+  db_name      = var.db_name
+  db_password  = var.db_password
+  db_port      = var.db_port
   db_user_name = var.db_user_name
 }
 

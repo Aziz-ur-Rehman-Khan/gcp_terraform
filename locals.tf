@@ -18,8 +18,9 @@ locals {
   environment_variables_map = merge(
     local.static_environment_variables,
     {
-      "REDIS" = "FFGGHHH"
-      # Add other static variables as needed
+      REDIS_HOST   = module.memcached_redis.redis_host
+      REDIS_PORT   = module.memcached_redis.redis_port
+      DATABASE_URL = module.cloud_sql.postgres_connection_string
     }
   )
 
